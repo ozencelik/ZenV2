@@ -1,21 +1,23 @@
+using Autofac;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Zen.Infrastructure;
-using Zen.Infrastructure.Data;
+using Zen.Core.Infrastructure;
 
 namespace Zen.Web
 {
     public class Startup
     {
+        private readonly IWebHostEnvironment _env;
         public IConfiguration Configuration { get; }
 
         public Startup(IConfiguration configuration,
             IWebHostEnvironment env)
         {
             Configuration = configuration;
+            _env = env;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -25,6 +27,11 @@ namespace Zen.Web
 
             string connectionString = Configuration.GetConnectionString("Mysql-Dev");
             services.AddDbContext(connectionString);
+        }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule(new InfrastructureModule(_env.EnvironmentName == "Development"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

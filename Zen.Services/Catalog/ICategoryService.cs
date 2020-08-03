@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Zen.Core.Services.Category
+namespace Zen.Services.Catalog
 {
-    class CategoryService
+    interface ICategoryService
     {
     }
 }

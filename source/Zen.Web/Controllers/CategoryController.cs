@@ -1,31 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Zen.Core.Services.Catalog;
 using Zen.Data.Entities;
 using Zen.Data.Models;
-using Zen.Infrastructure.Data;
 
 namespace Zen.Web.Controllers
 {
     public class CategoryController : Controller
     {
         private readonly ILogger<CategoryController> _logger;
-        private readonly AppDbContext _dbContext;
+        private readonly ICategoryService _categoryService;
 
         public CategoryController(ILogger<CategoryController> logger,
-            AppDbContext dbContext)
+            ICategoryService categoryService)
         {
             _logger = logger;
-            _dbContext = dbContext;
+            _categoryService = categoryService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _dbContext.Category.ToListAsync());
+            return View(await _categoryService.GetAllCategoriesAsync());
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -35,9 +34,8 @@ namespace Zen.Web.Controllers
 
             if (!id.HasValue)
                 return BadRequest();
-
-            var category = await _dbContext.Category
-                .FirstOrDefaultAsync(m => m.Id == id);
+            
+            var category = await _categoryService.GetCategoryByIdAsync(id.Value);
 
             if (category is null)
                 return NotFound();
@@ -56,8 +54,7 @@ namespace Zen.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                _dbContext.Add<Category>(model);
-                await _dbContext.SaveChangesAsync();
+                await _categoryService.InsertCategoryAsync(model);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -72,14 +69,14 @@ namespace Zen.Web.Controllers
             if (!id.HasValue)
                 return BadRequest();
 
-            var category = await _dbContext.Category.FindAsync(id);
-            
+            var category = await _categoryService.GetCategoryByIdAsync(id.Value);
+
             if (category is null)
                 return NotFound();
 
             return View(category);
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,CratedOn")] Category model)
@@ -87,15 +84,14 @@ namespace Zen.Web.Controllers
             if (model is null)
                 return BadRequest();
 
-            if (!int.Equals(id, model.Id)) 
+            if (!int.Equals(id, model.Id))
                 return NotFound();
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _dbContext.Update(model);
-                    await _dbContext.SaveChangesAsync();
+                    await _categoryService.UpdateCategoryAsync(model);
                 }
                 catch { }
                 return RedirectToAction(nameof(Index));
@@ -111,8 +107,7 @@ namespace Zen.Web.Controllers
             if (!id.HasValue)
                 return BadRequest();
 
-            var category = await _dbContext.Category
-                .FirstOrDefaultAsync(m => m.Id == id.Value);
+            var category = await _categoryService.GetCategoryByIdAsync(id.Value);
 
             if (category is null)
                 return NotFound();
@@ -124,10 +119,9 @@ namespace Zen.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _dbContext.Category.FindAsync(id);
+            var category = await _categoryService.GetCategoryByIdAsync(id);
 
-            _dbContext.Category.Remove(category);
-            await _dbContext.SaveChangesAsync();
+            await _categoryService.DeleteCategoryAsync(category);
 
             return RedirectToAction(nameof(Index));
         }
