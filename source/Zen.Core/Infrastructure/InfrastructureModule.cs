@@ -1,9 +1,5 @@
 ﻿using Autofac;
 using Module = Autofac.Module;
-using MediatR;
-using MediatR.Pipeline;
-using System.Collections.Generic;
-using System.Reflection;
 using Zen.Core.Services.Catalog;
 
 namespace Zen.Core.Infrastructure
@@ -20,6 +16,9 @@ namespace Zen.Core.Infrastructure
         private void RegisterCommonDependencies(ContainerBuilder builder)
         {
             builder.RegisterType<CategoryService>().As<ICategoryService>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<ProductService>().As<IProductService>()
                 .InstancePerLifetimeScope();
         }
 

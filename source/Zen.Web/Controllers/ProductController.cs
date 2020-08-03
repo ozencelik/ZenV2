@@ -10,21 +10,24 @@ using Zen.Data.Models;
 
 namespace Zen.Web.Controllers
 {
-    public class CategoryController : Controller
+    public class ProductController : Controller
     {
-        private readonly ILogger<CategoryController> _logger;
+        private readonly ILogger<ProductController> _logger;
+        private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
 
-        public CategoryController(ILogger<CategoryController> logger,
+        public ProductController(ILogger<ProductController> logger,
+            IProductService productService,
             ICategoryService categoryService)
         {
             _logger = logger;
+            _productService = productService;
             _categoryService = categoryService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _categoryService.GetAllCategoriesAsync());
+            return View(await _productService.GetAllProductsAsync());
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -35,26 +38,34 @@ namespace Zen.Web.Controllers
             if (!id.HasValue)
                 return BadRequest();
             
-            var category = await _categoryService.GetCategoryByIdAsync(id.Value);
+            var product = await _productService.GetProductByIdAsync(id.Value);
 
-            if (category is null)
+            if (product is null)
                 return NotFound();
 
-            return View(category);
+            return View(product);
         }
 
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Category model)
+        public async Task<IActionResult> Create(Product model)
         {
+            if (model is null)
+                return BadRequest();
+
             if (ModelState.IsValid)
             {
-                await _categoryService.InsertCategoryAsync(model);
+                var category = await _categoryService.GetCategoryByIdAsync(model.CategoryId);
+
+                if (category is null)
+                    return NotFound();
+
+                await _productService.InsertProductAsync(model);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -69,17 +80,17 @@ namespace Zen.Web.Controllers
             if (!id.HasValue)
                 return BadRequest();
 
-            var category = await _categoryService.GetCategoryByIdAsync(id.Value);
+            var product = await _productService.GetProductByIdAsync(id.Value);
 
-            if (category is null)
+            if (product is null)
                 return NotFound();
 
-            return View(category);
+            return View(product);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,CratedOn")] Category model)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Price,CategoryId,CratedOn")] Product model)
         {
             if (model is null)
                 return BadRequest();
@@ -91,7 +102,7 @@ namespace Zen.Web.Controllers
             {
                 try
                 {
-                    await _categoryService.UpdateCategoryAsync(model);
+                    await _productService.UpdateProductAsync(model);
                 }
                 catch { }
                 return RedirectToAction(nameof(Index));
@@ -107,21 +118,21 @@ namespace Zen.Web.Controllers
             if (!id.HasValue)
                 return BadRequest();
 
-            var category = await _categoryService.GetCategoryByIdAsync(id.Value);
+            var product = await _productService.GetProductByIdAsync(id.Value);
 
-            if (category is null)
+            if (product is null)
                 return NotFound();
 
-            return View(category);
+            return View(product);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var category = await _categoryService.GetCategoryByIdAsync(id);
+            var product = await _productService.GetProductByIdAsync(id);
 
-            await _categoryService.DeleteCategoryAsync(category);
+            await _productService.DeleteProductAsync(product);
 
             return RedirectToAction(nameof(Index));
         }

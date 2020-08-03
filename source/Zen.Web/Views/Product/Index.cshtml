@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Zen.Data.Entities.Category>
+﻿@model IEnumerable<Zen.Data.Entities.Product>
 
 @{
     ViewData["Title"] = "Index";
@@ -20,7 +20,10 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ParentCategory)
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreatedOn)
@@ -38,10 +41,13 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
-                @if (!(item.ParentCategory is null))
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                @if (!(item.Category is null))
                 {
                     <td>
-                        @Html.DisplayFor(modelItem => item.ParentCategory.Title)
+                        @Html.DisplayFor(modelItem => item.Category.Title)
                     </td>
                 }
                 else

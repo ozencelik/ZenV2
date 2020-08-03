@@ -15,14 +15,25 @@ namespace Zen.Core.Infrastructure
 
         public DbSet<Category> Category { get; set; }
 
+        public DbSet<Product> Product { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>().Property(e => e.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Category>().HasKey(e => e.Id);
             modelBuilder.Entity<Category>().Property(e => e.Title);
             modelBuilder.Entity<Category>().Property(e => e.ParentCategoryId);
-            modelBuilder.Entity<Category>().HasOne<Category>();
+            modelBuilder.Entity<Category>().HasOne(e => e.ParentCategory);
             modelBuilder.Entity<Category>().Property(e => e.CreatedOn);
+
+
+            modelBuilder.Entity<Product>().Property<int>("Id").ValueGeneratedOnAdd();
+            modelBuilder.Entity<Product>().HasKey("Id");
+            modelBuilder.Entity<Product>().Property(e => e.Title);
+            modelBuilder.Entity<Product>().Property(e => e.CategoryId);
+            modelBuilder.Entity<Product>().Property(e => e.Price);
+            modelBuilder.Entity<Product>().HasOne(e => e.Category);
+            modelBuilder.Entity<Product>().Property(e => e.CreatedOn);
 
             /*
             modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCart");
@@ -35,15 +46,6 @@ namespace Zen.Core.Infrastructure
             modelBuilder.Entity<ShoppingCart>().Property<decimal>("Price");
             modelBuilder.Entity<ShoppingCart>().Property<int>("Quantity");
             modelBuilder.Entity<ShoppingCart>().Property<DateTime>("CreatedAt");
-
-            modelBuilder.Entity<Product>().ToTable("Product");
-            modelBuilder.Entity<Product>().Property<int>("Id").ValueGeneratedOnAdd();
-            modelBuilder.Entity<Product>().HasKey("Id");
-            modelBuilder.Entity<Product>().Property<string>("Name");
-            modelBuilder.Entity<Product>().Property<string>("Description");
-            modelBuilder.Entity<Product>().Property<decimal>("Price");
-            modelBuilder.Entity<Product>().Property<int>("StockQuantity");
-            modelBuilder.Entity<Product>().Property<DateTime>("CreatedAt");
             */
             base.OnModelCreating(modelBuilder);
 
