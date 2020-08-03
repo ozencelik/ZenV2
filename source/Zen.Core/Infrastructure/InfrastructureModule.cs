@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Module = Autofac.Module;
 using Zen.Core.Services.Catalog;
+using Zen.Core.Services.Order;
 
 namespace Zen.Core.Infrastructure
 {
@@ -19,6 +20,9 @@ namespace Zen.Core.Infrastructure
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<ProductService>().As<IProductService>()
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<ShoppingCartService>().As<IShoppingCartService>()
                 .InstancePerLifetimeScope();
         }
 

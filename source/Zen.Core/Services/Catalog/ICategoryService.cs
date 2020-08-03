@@ -17,7 +17,7 @@ namespace Zen.Core.Services.Catalog
         /// Gets all categories
         /// </summary>
         /// <returns>Categories</returns>
-        Task<List<Category>> GetAllCategoriesAsync();
+        Task<IList<Category>> GetAllCategoriesAsync();
 
         /// <summary>
         /// Gets a category

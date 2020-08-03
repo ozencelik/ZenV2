@@ -17,6 +17,8 @@ namespace Zen.Core.Infrastructure
 
         public DbSet<Product> Product { get; set; }
 
+        public DbSet<ShoppingCartItem> ShoppingCart { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>().Property(e => e.Id).ValueGeneratedOnAdd();
@@ -26,27 +28,22 @@ namespace Zen.Core.Infrastructure
             modelBuilder.Entity<Category>().HasOne(e => e.ParentCategory);
             modelBuilder.Entity<Category>().Property(e => e.CreatedOn);
 
-
-            modelBuilder.Entity<Product>().Property<int>("Id").ValueGeneratedOnAdd();
-            modelBuilder.Entity<Product>().HasKey("Id");
+            modelBuilder.Entity<Product>().Property(e => e.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Product>().HasKey(e => e.Id);
             modelBuilder.Entity<Product>().Property(e => e.Title);
             modelBuilder.Entity<Product>().Property(e => e.CategoryId);
             modelBuilder.Entity<Product>().Property(e => e.Price);
             modelBuilder.Entity<Product>().HasOne(e => e.Category);
             modelBuilder.Entity<Product>().Property(e => e.CreatedOn);
 
-            /*
-            modelBuilder.Entity<ShoppingCart>().ToTable("ShoppingCart");
-            modelBuilder.Entity<ShoppingCart>().Property<int>("Id").ValueGeneratedOnAdd();
-            modelBuilder.Entity<ShoppingCart>().HasKey("Id");
-            modelBuilder.Entity<ShoppingCart>().Property<int>("CustomerId");
-            modelBuilder.Entity<ShoppingCart>().HasIndex("CustomerId");
-            modelBuilder.Entity<ShoppingCart>().Property<int>("ProductId");
-            modelBuilder.Entity<ShoppingCart>().HasIndex("ProductId");
-            modelBuilder.Entity<ShoppingCart>().Property<decimal>("Price");
-            modelBuilder.Entity<ShoppingCart>().Property<int>("Quantity");
-            modelBuilder.Entity<ShoppingCart>().Property<DateTime>("CreatedAt");
-            */
+            modelBuilder.Entity<ShoppingCartItem>().Property(e => e.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<ShoppingCartItem>().HasKey(e => e.Id);
+            modelBuilder.Entity<ShoppingCartItem>().Property(e => e.Quantity);
+            modelBuilder.Entity<ShoppingCartItem>().Property(e => e.TotalPrice);
+            modelBuilder.Entity<ShoppingCartItem>().Property(e => e.ProductId);
+            modelBuilder.Entity<ShoppingCartItem>().HasOne(e => e.Product);
+            modelBuilder.Entity<ShoppingCartItem>().Property(e => e.CreatedOn);
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

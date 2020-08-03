@@ -23,7 +23,7 @@ namespace Zen.Core.Services.Catalog
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<Category>> GetAllCategoriesAsync()
+        public async Task<IList<Category>> GetAllCategoriesAsync()
         {
             return await _dbContext.Category.ToListAsync();
         }

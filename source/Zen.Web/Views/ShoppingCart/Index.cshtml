@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Zen.Data.Entities.Product>
+﻿@model Zen.Data.Models.ShoppingCart
 
 @{
     ViewData["Title"] = "Index";
@@ -8,57 +8,46 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Add Product To ShoppingCart</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Id)
+                Product Title
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                Quantity
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                Total Price
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreatedOn)
+                Created On
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Items)
         {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Id)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Title)
+                    @Html.DisplayFor(modelItem => item.Product.Title)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price) ₺
+                    @Html.DisplayFor(modelItem => item.Quantity)
                 </td>
-                @if (!(item.Category is null))
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Category.Title)
-                    </td>
-                }
-                else
-                {
-                    <td></td>
-                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalPrice)
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedOn)
                 </td>
                 <td>
-                    <a asp-controller="ShoppingCart" asp-action="Create" asp-route-id="@item.Id">Add To Cart</a> |
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

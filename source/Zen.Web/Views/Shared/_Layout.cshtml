@@ -19,10 +19,13 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
+                            <a class="nav-link text-dark" asp-controller="Category" asp-action="Index">Category</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Product" asp-action="Index">Product</a>
+                            <a class="nav-link text-dark" asp-controller="Product" asp-action="Index">Product</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="cart" class="nav-link text-dark" asp-controller="ShoppingCart" asp-action="Index">Cart ( 0 )</a>
                         </li>
                     </ul>
                 </div>
@@ -43,6 +46,30 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        console.log("girdi");
+
+        $.ajax({
+            cache: false,
+            type: "GET",
+            url: "@(Url.Action("CartCount", "ShoppingCart"))",
+            success: function (data) {
+                if (data.success) {
+                    console.log("data success");
+                    console.log("data.count" + data.count);
+                    document.getElementById("cart").textContent = "Cart ( " + data.count + " )"; 
+                }
+                else {
+                    console.log("data fail");
+                }
+                console.log("gitti gldi");
+            },
+            error: function() {
+                console.log("gitti gelmedi");
+            }
+        });
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
