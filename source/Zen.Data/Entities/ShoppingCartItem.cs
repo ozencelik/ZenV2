@@ -10,6 +10,8 @@ namespace Zen.Data.Entities
 
         public decimal TotalPrice { get; set; }
 
+        public decimal TotalDiscount { get; set; }
+
         public Product Product { get; set; }
 
         public int ProductId { get; set; }

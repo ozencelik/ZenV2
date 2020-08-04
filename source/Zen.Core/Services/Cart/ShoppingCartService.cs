@@ -67,6 +67,11 @@ namespace Zen.Core.Services.Cart
             return await _dbContext.ShoppingCart.ToListAsync();
         }
 
+        public ShoppingCartItem GetShoppingCartItemByProductId(int productId)
+        {
+            return _dbContext.ShoppingCart.Where(s => s.ProductId == productId).SingleOrDefault();
+        }
+
         public async Task<int> UpdateShoppingCartItemAsync(ShoppingCartItem item)
         {
             if (item is null)

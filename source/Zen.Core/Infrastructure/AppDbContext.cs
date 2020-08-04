@@ -42,12 +42,14 @@ namespace Zen.Core.Infrastructure
             modelBuilder.Entity<ShoppingCartItem>().HasKey(e => e.Id);
             modelBuilder.Entity<ShoppingCartItem>().Property(e => e.Quantity);
             modelBuilder.Entity<ShoppingCartItem>().Property(e => e.TotalPrice);
+            modelBuilder.Entity<ShoppingCartItem>().Property(e => e.TotalDiscount);
             modelBuilder.Entity<ShoppingCartItem>().Property(e => e.ProductId);
             modelBuilder.Entity<ShoppingCartItem>().HasOne(e => e.Product);
             modelBuilder.Entity<ShoppingCartItem>().Property(e => e.CreatedOn);
 
             modelBuilder.Entity<Campaign>().Property(e => e.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<Campaign>().HasKey(e => e.Id);
+            modelBuilder.Entity<Campaign>().Property(e => e.Title);
             modelBuilder.Entity<Campaign>().Property(e => e.DiscountAmount);
             modelBuilder.Entity<Campaign>().Property(e => e.DiscountType);
             modelBuilder.Entity<Campaign>().Property(e => e.MinItemCount);

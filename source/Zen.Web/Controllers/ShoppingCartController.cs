@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Zen.Core.Services.Catalog;
 using Zen.Core.Services.Cart;
 using Zen.Data.Entities;
+using Zen.Data.Models;
 
 namespace Zen.Web.Controllers
 {
@@ -13,17 +14,39 @@ namespace Zen.Web.Controllers
     {
         private readonly IShoppingCartService _shoppingCartService;
         private readonly IProductService _productService;
+        private readonly ICampaignService _campaignService;
 
         public ShoppingCartController(IShoppingCartService shoppingCartService,
-            IProductService productService)
+            IProductService productService,
+            ICampaignService campaignService)
         {
             _shoppingCartService = shoppingCartService;
             _productService = productService;
+            _campaignService = campaignService;
         }
 
         public async Task<IActionResult> Index()
         {
-            return View(await _shoppingCartService.GetShoppingCartAsync());
+            var items = await _shoppingCartService.GetShoppingCartAsync();
+
+            foreach(var item in items)
+            {
+                item.Product = await _productService.GetProductByIdAsync(item.ProductId);
+            }
+
+            ShoppingCart cart = new ShoppingCart
+            {
+                Items = items,
+                CampaignDiscount = 0,
+                CartTotal = items.Sum(i => i.TotalPrice),
+                CartTotalAfterDiscounts = items.Sum(i => i.TotalPrice),
+                CouponDiscount = 0,
+                DeliveryCost = 0
+            };
+
+            cart = await _campaignService.CalculateAsync(cart);
+
+            return View(cart);
         }
 
         public async Task<IActionResult> Create(Product model)

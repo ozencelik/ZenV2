@@ -33,5 +33,12 @@ namespace Zen.Core.Services.Cart
         /// </summary>
         /// <returns>Shopping Cart</returns>
         Task<IList<ShoppingCartItem>> GetShoppingCartAsync();
+
+        /// <summary>
+        /// Gets shopping cart item by product id
+        /// </summary>
+        /// <param name="productId">Product</param>
+        /// <returns>ShoppingCartItem</returns>
+        ShoppingCartItem GetShoppingCartItemByProductId(int productId);
     }
 }

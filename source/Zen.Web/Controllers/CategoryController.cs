@@ -12,8 +12,8 @@ namespace Zen.Web.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly ILogger<CategoryController> _logger;
         private readonly ICategoryService _categoryService;
+        private readonly ILogger<CategoryController> _logger;
         private readonly IProductService _productService;
 
         public CategoryController(ILogger<CategoryController> logger,
@@ -25,9 +25,49 @@ namespace Zen.Web.Controllers
             _productService = productService;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Create()
         {
-            return View(await _categoryService.GetAllCategoriesAsync());
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Category model)
+        {
+            if (ModelState.IsValid)
+            {
+                await _categoryService.InsertCategoryAsync(model);
+
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id is null)
+                return NotFound();
+
+            if (!id.HasValue)
+                return BadRequest();
+
+            var category = await _categoryService.GetCategoryByIdAsync(id.Value);
+
+            if (category is null)
+                return NotFound();
+
+            return View(category);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var category = await _categoryService.GetCategoryByIdAsync(id);
+
+            await _categoryService.DeleteCategoryAsync(category);
+
+            return RedirectToAction(nameof(Index));
         }
 
         public async Task<IActionResult> Details(int? id)
@@ -52,24 +92,6 @@ namespace Zen.Web.Controllers
             category.Products = products;
 
             return View(category);
-        }
-
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Category model)
-        {
-            if (ModelState.IsValid)
-            {
-                await _categoryService.InsertCategoryAsync(model);
-
-                return RedirectToAction(nameof(Index));
-            }
-            return View();
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -110,37 +132,15 @@ namespace Zen.Web.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id is null)
-                return NotFound();
-
-            if (!id.HasValue)
-                return BadRequest();
-
-            var category = await _categoryService.GetCategoryByIdAsync(id.Value);
-
-            if (category is null)
-                return NotFound();
-
-            return View(category);
-        }
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var category = await _categoryService.GetCategoryByIdAsync(id);
-
-            await _categoryService.DeleteCategoryAsync(category);
-
-            return RedirectToAction(nameof(Index));
-        }
-
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new Error { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            return View(await _categoryService.GetAllCategoriesAsync());
         }
     }
 }

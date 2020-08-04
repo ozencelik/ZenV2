@@ -1,0 +1,92 @@
+﻿@using Zen.Data.Enums;
+@model IEnumerable<Zen.Data.Entities.Campaign>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiscountAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiscountType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MinItemCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedOn)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                @if (item.Category is null)
+                {
+                    <td>null</td>
+                }
+                else
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category.Title)
+                    </td>
+                }
+                @switch (item.DiscountType)
+                {
+                    case DiscountType.Rate:
+                        <td>
+                            % @Html.DisplayFor(model => item.DiscountAmount)
+                        </td>
+                        break;
+                    case DiscountType.Amount:
+                    default:
+                        <td>
+                            @Html.DisplayFor(model => item.DiscountAmount) ₺
+                        </td>
+                        break;
+                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.DiscountType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinItemCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedOn)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

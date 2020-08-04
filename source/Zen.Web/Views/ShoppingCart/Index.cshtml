@@ -5,11 +5,8 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Cart</h1>
 
-<p>
-    <a asp-action="Create">Add Product To ShoppingCart</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -33,9 +30,6 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Product.Title)
                 </td>
                 <td>
@@ -56,3 +50,41 @@
         }
     </tbody>
 </table>
+<br />
+<br />
+<div>
+    <h3>Cart Sumamry</h3>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CampaignDiscount) : 
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CampaignDiscount) ₺
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CouponDiscount) :
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CouponDiscount) ₺
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DeliveryCost) :
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DeliveryCost) ₺
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CartTotalAfterDiscounts) :
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CartTotalAfterDiscounts) ₺
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CartTotal) :
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CartTotal) ₺
+        </dd>
+    </dl>
+</div>
