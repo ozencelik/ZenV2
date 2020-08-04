@@ -8,30 +8,25 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Category</h4>
+    <h4>@Model.Title</h4>
     <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CreatedOn)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CreatedOn)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @{
+        int productCount;
+
+        if (Model.Products is null)
+            productCount = 0;
+        else
+            productCount = Model.Products.Count();
+    }
+    @foreach (var product in Model.Products)
+    {
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">@product.Title</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@product.Price ₺</h6>
+                <a class="card-link" asp-controller="ShoppingCart" asp-action="Create" asp-route-id="@product.Id">Add To Cart</a>
+            </div>
+        </div>
+        <br>
+    }
 </div>

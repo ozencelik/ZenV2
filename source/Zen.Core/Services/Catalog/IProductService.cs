@@ -27,6 +27,13 @@ namespace Zen.Core.Services.Catalog
         Task<Product> GetProductByIdAsync(int productId);
 
         /// <summary>
+        /// Gets all products by category id
+        /// </summary>
+        /// <param name="categoryId">Category identifier</param>
+        /// <returns>Products</returns>
+        Task<IList<Product>> GetProductsByCategoryIdAsync(int categoryId);
+
+        /// <summary>
         /// Inserts product
         /// </summary>
         /// <param name="product">Product</param>

@@ -6,12 +6,13 @@
     <title>@ViewData["Title"] - Zen</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <!--<link rel="stylesheet" href="~/css/product-cart.css" />-->
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Zen</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Category" asp-action="Index">Zen</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -40,7 +41,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2020 - Zen - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2020 - ZenCommerce
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -48,25 +49,21 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <script>
-        console.log("girdi");
-
+        //set cart count in header
         $.ajax({
             cache: false,
             type: "GET",
             url: "@(Url.Action("CartCount", "ShoppingCart"))",
             success: function (data) {
                 if (data.success) {
-                    console.log("data success");
-                    console.log("data.count" + data.count);
                     document.getElementById("cart").textContent = "Cart ( " + data.count + " )"; 
                 }
                 else {
-                    console.log("data fail");
+                    console.log("Cannot get cart count async");
                 }
-                console.log("gitti gldi");
             },
             error: function() {
-                console.log("gitti gelmedi");
+                console.log("Something failed");
             }
         });
     </script>

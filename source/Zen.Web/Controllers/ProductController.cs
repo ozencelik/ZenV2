@@ -37,7 +37,7 @@ namespace Zen.Web.Controllers
 
             if (!id.HasValue)
                 return BadRequest();
-            
+
             var product = await _productService.GetProductByIdAsync(id.Value);
 
             if (product is null)

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Zen.Core.Infrastructure;
@@ -32,6 +33,12 @@ namespace Zen.Core.Services.Catalog
         {
             return await _dbContext.Product
                 .FirstOrDefaultAsync(m => m.Id == productId);
+        }
+
+        public async Task<IList<Product>> GetProductsByCategoryIdAsync(int categoryId)
+        {
+            return await _dbContext.Product
+                .Where(m => m.CategoryId == categoryId)?.ToListAsync();
         }
 
         public async Task<int> InsertProductAsync(Product product)
