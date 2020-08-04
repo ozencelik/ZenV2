@@ -8,11 +8,6 @@ namespace Zen.Core.Infrastructure
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-        }
-
         public DbSet<Category> Category { get; set; }
 
         public DbSet<Product> Product { get; set; }
@@ -20,6 +15,13 @@ namespace Zen.Core.Infrastructure
         public DbSet<ShoppingCartItem> ShoppingCart { get; set; }
 
         public DbSet<Campaign> Campaign { get; set; }
+
+        public DbSet<Coupon> Coupon { get; set; }
+
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        {
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,6 +58,14 @@ namespace Zen.Core.Infrastructure
             modelBuilder.Entity<Campaign>().Property(e => e.CategoryId);
             modelBuilder.Entity<Campaign>().HasOne(e => e.Category);
             modelBuilder.Entity<Campaign>().Property(e => e.CreatedOn);
+
+            modelBuilder.Entity<Coupon>().Property(e => e.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Coupon>().HasKey(e => e.Id);
+            modelBuilder.Entity<Coupon>().Property(e => e.Title);
+            modelBuilder.Entity<Coupon>().Property(e => e.DiscountAmount);
+            modelBuilder.Entity<Coupon>().Property(e => e.DiscountType);
+            modelBuilder.Entity<Coupon>().Property(e => e.MinPurchase);
+            modelBuilder.Entity<Coupon>().Property(e => e.CreatedOn);
 
             base.OnModelCreating(modelBuilder);
 

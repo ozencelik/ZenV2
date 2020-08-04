@@ -88,8 +88,7 @@ namespace Zen.Core.Services.Cart
         /// <summary>
         /// Check the campaign is applicable or not
         /// </summary>
-        /// <param name="campaign">Campaign</param>    
-        /// <param name="cart">ShoppingCart</param>   
+        /// <param name="campaign">Campaign</param>
         /// <returns>Is Applicable</returns>  
         Task<bool> IsCampaignApplicableAsync(Campaign campaign);
 

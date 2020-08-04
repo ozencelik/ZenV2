@@ -1,0 +1,53 @@
+CREATE TABLE Category(
+   Id INT NOT NULL AUTO_INCREMENT,
+   Title VARCHAR(100) NOT NULL,
+   ParentCategoryId INT,
+   CreatedOn DATETIME,
+   PRIMARY KEY ( Id )
+);
+CREATE TABLE Product(
+   Id INT NOT NULL AUTO_INCREMENT,
+   CategoryId INT NOT NULL,
+   Title VARCHAR(100) NOT NULL,
+   Price DECIMAL NOT NULL,
+   CreatedOn DATETIME,
+   PRIMARY KEY ( Id )
+);
+CREATE TABLE ShoppingCart(
+   Id INT NOT NULL AUTO_INCREMENT,
+   ProductId INT NOT NULL,
+   Quantity INT NOT NULL,
+   TotalPrice DECIMAL NOT NULL,
+   TotalDiscount DECIMAL NOT NULL,
+   CreatedOn DATETIME,
+   PRIMARY KEY ( Id )
+);
+CREATE TABLE Campaign(
+   Id INT NOT NULL AUTO_INCREMENT,
+   CategoryId INT NOT NULL,
+   Title VARCHAR(100) NOT NULL,
+   DiscountAmount INT NOT NULL,
+   DiscountType INT NOT NULL,
+   MinItemCount INT NOT NULL,
+   CreatedOn DATETIME,
+   PRIMARY KEY ( Id )
+);
+CREATE TABLE Coupon(
+   Id INT NOT NULL AUTO_INCREMENT,
+   Title VARCHAR(100) NOT NULL,
+   DiscountAmount INT NOT NULL,
+   DiscountType INT NOT NULL,
+   MinPurchase INT NOT NULL,
+   CreatedOn DATETIME,
+   PRIMARY KEY ( Id )
+);
+TRUNCATE TABLE Category;
+TRUNCATE TABLE Product;
+TRUNCATE TABLE ShoppingCart;
+TRUNCATE TABLE Campaign;
+TRUNCATE TABLE Coupon;
+DROP TABLE Category;
+DROP TABLE Product;
+DROP TABLE ShoppingCart;
+DROP TABLE Campaign;
+DROP TABLE Coupon;

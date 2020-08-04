@@ -29,6 +29,9 @@ namespace Zen.Core.Infrastructure
             builder.RegisterType<CampaignService>().As<ICampaignService>()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<CouponService>().As<ICouponService>()
+                .InstancePerLifetimeScope();
+
             builder.RegisterType<DeliveryService>().As<IDeliveryService>()
                 .InstancePerLifetimeScope();
         }

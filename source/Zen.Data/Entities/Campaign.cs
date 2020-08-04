@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Zen.Data.Enums;
+﻿using Zen.Data.Enums;
 
 namespace Zen.Data.Entities
 {
