@@ -54,7 +54,7 @@ namespace Zen.Web.Controllers
             return View(category);
         }
 
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
             return View();
         }

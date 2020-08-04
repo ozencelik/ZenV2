@@ -19,6 +19,8 @@ namespace Zen.Core.Infrastructure
 
         public DbSet<ShoppingCartItem> ShoppingCart { get; set; }
 
+        public DbSet<Campaign> Campaign { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>().Property(e => e.Id).ValueGeneratedOnAdd();
@@ -43,6 +45,15 @@ namespace Zen.Core.Infrastructure
             modelBuilder.Entity<ShoppingCartItem>().Property(e => e.ProductId);
             modelBuilder.Entity<ShoppingCartItem>().HasOne(e => e.Product);
             modelBuilder.Entity<ShoppingCartItem>().Property(e => e.CreatedOn);
+
+            modelBuilder.Entity<Campaign>().Property(e => e.Id).ValueGeneratedOnAdd();
+            modelBuilder.Entity<Campaign>().HasKey(e => e.Id);
+            modelBuilder.Entity<Campaign>().Property(e => e.DiscountAmount);
+            modelBuilder.Entity<Campaign>().Property(e => e.DiscountType);
+            modelBuilder.Entity<Campaign>().Property(e => e.MinItemCount);
+            modelBuilder.Entity<Campaign>().Property(e => e.CategoryId);
+            modelBuilder.Entity<Campaign>().HasOne(e => e.Category);
+            modelBuilder.Entity<Campaign>().Property(e => e.CreatedOn);
 
             base.OnModelCreating(modelBuilder);
 

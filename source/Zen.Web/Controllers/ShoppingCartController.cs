@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Zen.Core.Services.Catalog;
-using Zen.Core.Services.Order;
+using Zen.Core.Services.Cart;
 using Zen.Data.Entities;
 
 namespace Zen.Web.Controllers

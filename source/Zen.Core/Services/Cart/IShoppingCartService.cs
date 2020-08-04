@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Zen.Data.Entities;
 using Zen.Data.Models;
 
-namespace Zen.Core.Services.Order
+namespace Zen.Core.Services.Cart
 {
     /// <summary>
     /// Shopping cart service
