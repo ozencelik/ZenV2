@@ -19,7 +19,7 @@ namespace Zen.Data.Models
 
         public decimal CouponDiscount { get; set; }
 
-        public decimal DeliveryCost { get; set; }
+        public double DeliveryCost { get; set; }
 
         public  IList<ShoppingCartItem> Items { get; set; }
 

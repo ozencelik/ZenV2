@@ -13,20 +13,17 @@ namespace Zen.Core.Services.Cart
 {
     public class CampaignService : ICampaignService
     {
-        private readonly ICategoryService _categoryService;
         private readonly AppDbContext _dbContext;
         private readonly IProductService _productService;
         private readonly IShoppingCartService _shoppingCartService;
 
         public CampaignService(AppDbContext dbContext,
             IShoppingCartService shoppingCartService,
-            IProductService productService,
-            ICategoryService categoryService)
+            IProductService productService)
         {
             _dbContext = dbContext;
             _shoppingCartService = shoppingCartService;
             _productService = productService;
-            _categoryService = categoryService;
         }
 
         public async Task<ShoppingCart> CalculateAsync(ShoppingCart cart)
