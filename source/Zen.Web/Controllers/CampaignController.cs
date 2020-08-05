@@ -13,10 +13,13 @@ namespace Zen.Web.Controllers
 {
     public class CampaignController : Controller
     {
+        #region Fields
         private readonly ICampaignService _campaignService;
         private readonly ICategoryService _categoryService;
         private readonly ILogger<CampaignController> _logger;
+        #endregion
 
+        #region Ctor
         public CampaignController(ILogger<CampaignController> logger,
             ICampaignService campaignService,
             ICategoryService categoryService)
@@ -25,7 +28,9 @@ namespace Zen.Web.Controllers
             _campaignService = campaignService;
             _categoryService = categoryService;
         }
+        #endregion
 
+        #region Methods
         public IActionResult Create()
         {
             return View();
@@ -147,5 +152,6 @@ namespace Zen.Web.Controllers
         {
             return View(await _campaignService.GetAllCampaignsAsync());
         }
+        #endregion
     }
 }

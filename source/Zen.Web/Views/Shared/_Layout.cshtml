@@ -6,7 +6,6 @@
     <title>@ViewData["Title"] - Zen</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <!--<link rel="stylesheet" href="~/css/product-cart.css" />-->
 </head>
 <body>
     <header>
@@ -29,7 +28,12 @@
                             <a class="nav-link text-dark" asp-controller="Campaign" asp-action="Index">Campaign</a>
                         </li>
                         <li class="nav-item">
-                            <a id="cart" class="nav-link text-dark" asp-controller="ShoppingCart" asp-action="Index">Cart ( 0 )</a>
+                            <a class="nav-link text-dark" asp-controller="Coupon" asp-action="Index">Coupon</a>
+                        </li>
+                        <li class="nav-item">
+                            <a id="cart" class="nav-link text-dark" asp-controller="ShoppingCart" asp-action="Index">
+                                Cart
+                            </a>
                         </li>
                     </ul>
                 </div>
@@ -50,7 +54,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     <script>
         //set cart count in header
         $.ajax({
@@ -59,7 +62,7 @@
             url: "@(Url.Action("CartCount", "ShoppingCart"))",
             success: function (data) {
                 if (data.success) {
-                    document.getElementById("cart").textContent = "Cart ( " + data.count + " )"; 
+                    document.getElementById("cart").textContent = "Cart ( " + data.count + " )";
                 }
                 else {
                     console.log("Cannot get cart count async");

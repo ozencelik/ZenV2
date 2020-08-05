@@ -12,10 +12,13 @@ namespace Zen.Web.Controllers
 {
     public class ProductController : Controller
     {
+        #region Fields
         private readonly ILogger<ProductController> _logger;
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
+        #endregion
 
+        #region Ctor
         public ProductController(ILogger<ProductController> logger,
             IProductService productService,
             ICategoryService categoryService)
@@ -24,7 +27,9 @@ namespace Zen.Web.Controllers
             _productService = productService;
             _categoryService = categoryService;
         }
+        #endregion
 
+        #region Methods
         public async Task<IActionResult> Index()
         {
             return View(await _productService.GetAllProductsAsync());
@@ -142,5 +147,6 @@ namespace Zen.Web.Controllers
         {
             return View(new Error { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        #endregion
     }
 }

@@ -10,13 +10,18 @@ namespace Zen.Core.Services.Catalog
 {
     public class CategoryService : ICategoryService
     {
+        #region Fields
         private readonly AppDbContext _dbContext;
+        #endregion
 
+        #region Ctor
         public CategoryService(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
+        #endregion
 
+        #region Methods
         public async Task<int> DeleteCategoryAsync(Category category)
         {
             _dbContext.Category.Remove(category);
@@ -45,5 +50,6 @@ namespace Zen.Core.Services.Catalog
             _dbContext.Update(category);
             return await _dbContext.SaveChangesAsync();
         }
+        #endregion
     }
 }

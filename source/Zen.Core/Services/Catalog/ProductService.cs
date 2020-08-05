@@ -11,13 +11,18 @@ namespace Zen.Core.Services.Catalog
 {
     public class ProductService : IProductService
     {
+        #region Fields
         private readonly AppDbContext _dbContext;
+        #endregion
 
+        #region Ctor
         public ProductService(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
+        #endregion
 
+        #region Methods
         public async Task<int> DeleteProductAsync(Product product)
         {
             _dbContext.Product.Remove(product);
@@ -52,5 +57,6 @@ namespace Zen.Core.Services.Catalog
             _dbContext.Update(product);
             return await _dbContext.SaveChangesAsync();
         }
+        #endregion
     }
 }

@@ -12,6 +12,7 @@ namespace Zen.Web.Controllers
 {
     public class ShoppingCartController : Controller
     {
+        #region Fields
         private const double COST_PER_DELIVERY = 2.49;
         private const double COST_PER_PRODUCT = 1.79;
         private const double FIXED_COST = 2.99;
@@ -20,7 +21,9 @@ namespace Zen.Web.Controllers
         private readonly IDeliveryService _deliveryService;
         private readonly IProductService _productService;
         private readonly IShoppingCartService _shoppingCartService;
+        #endregion
 
+        #region Ctor
         public ShoppingCartController(IShoppingCartService shoppingCartService,
             IProductService productService,
             ICampaignService campaignService,
@@ -31,7 +34,9 @@ namespace Zen.Web.Controllers
             _campaignService = campaignService;
             _deliveryService = deliveryService;
         }
+        #endregion
 
+        #region Methods
         public async Task<IActionResult> AddToCart(ShoppingCartItem model)
         {
             if (model is null)
@@ -117,5 +122,6 @@ namespace Zen.Web.Controllers
 
             return View(cart);
         }
+        #endregion
     }
 }

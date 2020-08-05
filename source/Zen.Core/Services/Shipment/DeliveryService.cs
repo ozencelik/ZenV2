@@ -9,13 +9,18 @@ namespace Zen.Core.Services.Shipment
 {
     public class DeliveryService : IDeliveryService
     {
+        #region Fields
         private readonly IProductService _productService;
+        #endregion
 
+        #region Ctor
         public DeliveryService(IProductService productService)
         {
             _productService = productService;
         }
+        #endregion
 
+        #region Methods
         public async Task<double> CalculateDeliveryCostAsync(IList<ShoppingCartItem> cart,
             double costPerDelivery, double costPerProduct, double fixedCost)
         {
@@ -47,5 +52,6 @@ namespace Zen.Core.Services.Shipment
 
             return products.GroupBy(p => p.CategoryId).Count();
         }
+        #endregion
     }
 }

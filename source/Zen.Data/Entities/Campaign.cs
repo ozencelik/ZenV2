@@ -10,7 +10,7 @@ namespace Zen.Data.Entities
 
         public Category Category { get; set; }
 
-        public int DiscountAmount { get; set; }
+        public decimal DiscountAmount { get; set; }
 
         public DiscountType DiscountType { get; set; }
 

@@ -12,6 +12,7 @@ namespace Zen.Core.Infrastructure
 {
     public static class Seeder
     {
+        #region Methods
         public static void Initialize(IServiceProvider serviceProvider)
         {
             using (var dbContext = new AppDbContext(
@@ -28,12 +29,6 @@ namespace Zen.Core.Infrastructure
         }
         public static void PopulateTestData(AppDbContext dbContext)
         {
-            foreach (var item in dbContext.Category)
-            {
-                dbContext.Remove(item);
-            }
-            dbContext.SaveChanges();
-
             dbContext.Category.Add(new Category { Title = "A" });
             dbContext.Category.Add(new Category { Title = "B" });
             dbContext.Category.Add(new Category { Title = "C", ParentCategoryId = 11 });
@@ -86,7 +81,14 @@ namespace Zen.Core.Infrastructure
             dbContext.Campaign.Add(new Campaign { Title = "M", CategoryId = 61, DiscountAmount = 15, DiscountType = DiscountType.Amount, MinItemCount = 4 });
             dbContext.Campaign.Add(new Campaign { Title = "N", CategoryId = 61, DiscountAmount = 6, DiscountType = DiscountType.Rate, MinItemCount = 5 });
 
+            dbContext.Coupon.Add(new Coupon { Title = "A", DiscountAmount = 10, DiscountType = DiscountType.Amount, MinPurchase = 50 });
+            dbContext.Coupon.Add(new Coupon { Title = "B", DiscountAmount = 5, DiscountType = DiscountType.Amount, MinPurchase = 35 });
+            dbContext.Coupon.Add(new Coupon { Title = "C", DiscountAmount = 5, DiscountType = DiscountType.Rate, MinPurchase = 70 });
+            dbContext.Coupon.Add(new Coupon { Title = "D", DiscountAmount = 5, DiscountType = DiscountType.Amount, MinPurchase = 100 });
+            dbContext.Coupon.Add(new Coupon { Title = "E", DiscountAmount = 5, DiscountType = DiscountType.Rate, MinPurchase = 200 });
+
             dbContext.SaveChanges();
         }
+        #endregion
     }
 }

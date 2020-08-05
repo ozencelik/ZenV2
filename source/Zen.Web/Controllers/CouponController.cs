@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Zen.Core.Services.Cart;
 using Zen.Core.Services.Catalog;
@@ -13,17 +11,28 @@ namespace Zen.Web.Controllers
 {
     public class CouponController : Controller
     {
-        private readonly ICampaignService _campaignService;
+        #region Fields
+        private readonly ICouponService _couponService;
         private readonly ICategoryService _categoryService;
         private readonly ILogger<CouponController> _logger;
+        #endregion
 
+        #region Ctor
         public CouponController(ILogger<CouponController> logger,
-            ICampaignService campaignService,
+            ICouponService couponService,
             ICategoryService categoryService)
         {
             _logger = logger;
-            _campaignService = campaignService;
+            _couponService = couponService;
             _categoryService = categoryService;
+        }
+        #endregion
+
+        #region Methods
+        public IActionResult ApplyCoupon(int? id)
+        {
+            var a = 5;
+            return View();
         }
 
         public IActionResult Create()
@@ -33,14 +42,14 @@ namespace Zen.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Campaign model)
+        public async Task<IActionResult> Create(Coupon model)
         {
             if (model is null)
                 return BadRequest(nameof(model));
 
             if (ModelState.IsValid)
             {
-                await _campaignService.InsertCampaignAsync(model);
+                await _couponService.InsertCouponAsync(model);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -55,21 +64,21 @@ namespace Zen.Web.Controllers
             if (!id.HasValue)
                 return BadRequest();
 
-            var campaign = await _campaignService.GetCampaignByIdAsync(id.Value);
+            var coupon = await _couponService.GetCouponByIdAsync(id.Value);
 
-            if (campaign is null)
+            if (coupon is null)
                 return NotFound();
 
-            return View(campaign);
+            return View(coupon);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var campaign = await _campaignService.GetCampaignByIdAsync(id);
+            var coupon = await _couponService.GetCouponByIdAsync(id);
 
-            await _campaignService.DeleteCampaignAsync(campaign);
+            await _couponService.DeleteCouponAsync(coupon);
 
             return RedirectToAction(nameof(Index));
         }
@@ -83,19 +92,12 @@ namespace Zen.Web.Controllers
                 return BadRequest();
 
 
-            var campaign = await _campaignService.GetCampaignByIdAsync(id.Value);
+            var coupon = await _couponService.GetCouponByIdAsync(id.Value);
 
-            if (campaign is null)
+            if (coupon is null)
                 return NotFound();
 
-            var category = await _categoryService.GetCategoryByIdAsync(campaign.CategoryId);
-
-            if (category is null)
-                return NotFound();
-
-            campaign.Category = category;
-
-            return View(campaign);
+            return View(coupon);
         }
 
         public async Task<IActionResult> Edit(int? id)
@@ -106,18 +108,18 @@ namespace Zen.Web.Controllers
             if (!id.HasValue)
                 return BadRequest();
 
-            var campaign = await _campaignService.GetCampaignByIdAsync(id.Value);
+            var coupon = await _couponService.GetCouponByIdAsync(id.Value);
 
-            if (campaign is null)
+            if (coupon is null)
                 return NotFound();
 
-            return View(campaign);
+            return View(coupon);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id
-            , [Bind("Id,Title,CategoryId,DiscountAmount,DiscountType,MinItemCount,CratedOn")] Campaign model)
+            , [Bind("Id,Title,DiscountAmount,DiscountType,MinPurchase,CratedOn")] Coupon model)
         {
             if (model is null)
                 return BadRequest();
@@ -129,7 +131,7 @@ namespace Zen.Web.Controllers
             {
                 try
                 {
-                    await _campaignService.UpdateCampaignAsync(model);
+                    await _couponService.UpdateCouponAsync(model);
                 }
                 catch { }
                 return RedirectToAction(nameof(Index));
@@ -145,7 +147,8 @@ namespace Zen.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _campaignService.GetAllCampaignsAsync());
+            return View(await _couponService.GetAllCouponsAsync());
         }
+        #endregion
     }
 }

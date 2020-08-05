@@ -1,7 +1,8 @@
-﻿@model IEnumerable<Zen.Data.Entities.Product>
+﻿@using Zen.Data.Enums;
+@model IEnumerable<Zen.Data.Entities.Coupon>
 
 @{
-    ViewData["Title"] = "Product - Index";
+    ViewData["Title"] = "Coupon - Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -20,10 +21,13 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Price)
+                @Html.DisplayNameFor(model => model.DiscountAmount)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Category)
+                @Html.DisplayNameFor(model => model.DiscountType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MinPurchase)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreatedOn)
@@ -41,24 +45,31 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
+                @switch (item.DiscountType)
+                {
+                    case DiscountType.Rate:
+                        <td>
+                            % @Html.DisplayFor(model => item.DiscountAmount)
+                        </td>
+                        break;
+                    case DiscountType.Amount:
+                    default:
+                        <td>
+                            @Html.DisplayFor(model => item.DiscountAmount) ₺
+                        </td>
+                        break;
+                }
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price) ₺
+                    @Html.DisplayFor(modelItem => item.DiscountType)
                 </td>
-                @if (!(item.Category is null))
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Category.Title)
-                    </td>
-                }
-                else
-                {
-                    <td></td>
-                }
+                <td>
+                    @Html.DisplayFor(modelItem => item.MinPurchase) ₺
+                </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.CreatedOn)
                 </td>
                 <td>
-                    <a asp-controller="ShoppingCart" asp-action="Create" asp-route-id="@item.Id">Add To Cart</a> |
+                    <a asp-action="ApplyCoupon" asp-route-id="@item.Id">Apply Coupon</a> |
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

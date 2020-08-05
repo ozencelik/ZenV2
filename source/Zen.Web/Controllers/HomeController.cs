@@ -11,13 +11,18 @@ namespace Zen.Web.Controllers
 {
     public class HomeController : Controller
     {
+        #region Fields
         private readonly ILogger<HomeController> _logger;
+        #endregion
 
+        #region Ctor
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
+        #endregion
 
+        #region Methods
         public IActionResult Index()
         {
             return View();
@@ -33,5 +38,6 @@ namespace Zen.Web.Controllers
         {
             return View(new Error { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+        #endregion
     }
 }

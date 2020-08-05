@@ -8,13 +8,18 @@ namespace Zen.Core.Infrastructure
 {
     public class InfrastructureModule : Module
     {
+        #region Fields
         private bool _isDevelopment = false;
+        #endregion
 
+        #region Ctor
         public InfrastructureModule(bool isDevelopment)
         {
             _isDevelopment = isDevelopment;
         }
+        #endregion
 
+        #region Methods
         private void RegisterCommonDependencies(ContainerBuilder builder)
         {
             builder.RegisterType<CategoryService>().As<ICategoryService>()
@@ -58,6 +63,6 @@ namespace Zen.Core.Infrastructure
             }
             RegisterCommonDependencies(builder);
         }
-
+        #endregion
     }
 }

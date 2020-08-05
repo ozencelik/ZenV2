@@ -12,13 +12,18 @@ namespace Zen.Core.Services.Cart
 {
     public class ShoppingCartService : IShoppingCartService
     {
+        #region Fields
         private readonly AppDbContext _dbContext;
+        #endregion
 
+        #region Ctor
         public ShoppingCartService(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
+        #endregion
 
+        #region Methods
         public async Task<IList<string>> AddItemAsync(Product product, int quantity = 1)
         {
             if (product is null)
@@ -80,5 +85,6 @@ namespace Zen.Core.Services.Cart
             _dbContext.Update(item);
             return await _dbContext.SaveChangesAsync();
         }
+        #endregion
     }
 }

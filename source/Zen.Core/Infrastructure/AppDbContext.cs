@@ -8,6 +8,7 @@ namespace Zen.Core.Infrastructure
 {
     public class AppDbContext : DbContext
     {
+        #region Fields
         public DbSet<Category> Category { get; set; }
 
         public DbSet<Product> Product { get; set; }
@@ -17,12 +18,16 @@ namespace Zen.Core.Infrastructure
         public DbSet<Campaign> Campaign { get; set; }
 
         public DbSet<Coupon> Coupon { get; set; }
+        #endregion
 
+        #region Ctor
         public AppDbContext(DbContextOptions<AppDbContext> options)
             : base(options)
         {
         }
+        #endregion
 
+        #region Methods
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Category>().Property(e => e.Id).ValueGeneratedOnAdd();
@@ -83,5 +88,6 @@ namespace Zen.Core.Infrastructure
         {
             return SaveChangesAsync().GetAwaiter().GetResult();
         }
+        #endregion
     }
 }

@@ -12,10 +12,13 @@ namespace Zen.Web.Controllers
 {
     public class CategoryController : Controller
     {
+        #region Fields
         private readonly ICategoryService _categoryService;
         private readonly ILogger<CategoryController> _logger;
         private readonly IProductService _productService;
+        #endregion
 
+        #region Ctor
         public CategoryController(ILogger<CategoryController> logger,
             ICategoryService categoryService,
             IProductService productService)
@@ -24,7 +27,9 @@ namespace Zen.Web.Controllers
             _categoryService = categoryService;
             _productService = productService;
         }
+        #endregion
 
+        #region Methods
         public IActionResult Create()
         {
             return View();
@@ -142,5 +147,6 @@ namespace Zen.Web.Controllers
         {
             return View(await _categoryService.GetAllCategoriesAsync());
         }
+        #endregion
     }
 }

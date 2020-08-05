@@ -13,10 +13,13 @@ namespace Zen.Core.Services.Cart
 {
     public class CampaignService : ICampaignService
     {
+        #region Fields
         private readonly AppDbContext _dbContext;
         private readonly IProductService _productService;
         private readonly IShoppingCartService _shoppingCartService;
+        #endregion
 
+        #region Ctor
         public CampaignService(AppDbContext dbContext,
             IShoppingCartService shoppingCartService,
             IProductService productService)
@@ -25,7 +28,9 @@ namespace Zen.Core.Services.Cart
             _shoppingCartService = shoppingCartService;
             _productService = productService;
         }
+        #endregion
 
+        #region Methods
         public async Task<ShoppingCart> CalculateAsync(ShoppingCart cart)
         {
             if (cart is null)
@@ -177,5 +182,6 @@ namespace Zen.Core.Services.Cart
             _dbContext.Update(campaign);
             return await _dbContext.SaveChangesAsync();
         }
+        #endregion
     }
 }

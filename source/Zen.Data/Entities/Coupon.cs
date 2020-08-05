@@ -9,7 +9,7 @@ namespace Zen.Data.Entities
     {
         public string Title { get; set; }
 
-        public int DiscountAmount { get; set; }
+        public decimal DiscountAmount { get; set; }
 
         public decimal MinPurchase { get; set; }
 

@@ -7,6 +7,7 @@ namespace Zen.Core.Infrastructure
 {
     public static class StartupSetup
     {
+        #region Methods
         public static void AddDbContext(this IServiceCollection services, string connectionString) =>
             services.AddDbContext<AppDbContext>(options =>
                 options.UseMySql(connectionString,
@@ -17,5 +18,6 @@ namespace Zen.Core.Infrastructure
                         maxRetryDelay: TimeSpan.FromSeconds(30),
                         errorNumbersToAdd: null);
                 }));
+        #endregion
     }
 }
