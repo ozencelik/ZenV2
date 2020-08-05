@@ -13,6 +13,14 @@ namespace Zen.Core.Services.Cart
     public interface ICouponService
     {
         /// <summary>
+        /// Calculates a coupon discount
+        /// </summary>
+        /// <param name="coupon">Coupon</param>
+        /// <param name="cart">Shopping Cart</param>
+        /// <returns>ShoppingCart result</returns>
+        Task<ShoppingCart> ApplyCouponAsync(Coupon coupon, ShoppingCart cart);
+
+        /// <summary>
         /// Calculate coupon discounts
         /// </summary>
         /// <param name="cart">Shopping Cart</param>
@@ -47,13 +55,6 @@ namespace Zen.Core.Services.Cart
         decimal GetCouponDiscount(Coupon coupon, decimal cartTotal);
 
         /// <summary>
-        /// Gets cart total price of shopping cartitems
-        /// </summary>
-        /// <param name="items"></param>
-        /// <returns>Cart total</returns>
-        decimal GetCartTotal(IList<ShoppingCartItem> items);
-
-        /// <summary>
         /// Inserts a coupon
         /// </summary>
         /// <param name="coupon">Coupon</param>        
@@ -64,7 +65,7 @@ namespace Zen.Core.Services.Cart
         /// </summary>
         /// <param name="coupon">Coupon</param>
         /// <returns>Is Applicable</returns>  
-        bool IsCouponApplicable(Coupon coupon, IList<ShoppingCartItem> items);
+        bool IsCouponApplicable(Coupon coupon);
 
         /// <summary>
         /// Updates a coupon

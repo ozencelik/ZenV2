@@ -13,24 +13,23 @@ namespace Zen.Web.Controllers
     {
         #region Fields
         private readonly ICouponService _couponService;
-        private readonly ICategoryService _categoryService;
         private readonly ILogger<CouponController> _logger;
         #endregion
 
         #region Ctor
         public CouponController(ILogger<CouponController> logger,
-            ICouponService couponService,
-            ICategoryService categoryService)
+            ICouponService couponService)
         {
             _logger = logger;
             _couponService = couponService;
-            _categoryService = categoryService;
         }
         #endregion
 
         #region Methods
         public IActionResult ApplyCoupon(int? id)
         {
+            if(id is null)
+
             var a = 5;
             return View();
         }

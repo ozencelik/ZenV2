@@ -52,13 +52,6 @@ namespace Zen.Core.Services.Cart
         Task<IList<Campaign>> GetCampaignsByCategoryIdAsync(int categoryId);
 
         /// <summary>
-        /// Gets all shopping cart items belong to categoryId
-        /// </summary>
-        /// <param name="categoryId"></param>
-        /// <returns>ShoppingCartItems</returns>
-        Task<IList<ShoppingCartItem>> GetShoppingCartItemsByCategoryIdAsync(int categoryId);
-
-        /// <summary>
         /// Gets total price of shopping cartitems
         /// </summary>
         /// <param name="items"></param>
@@ -71,13 +64,6 @@ namespace Zen.Core.Services.Cart
         /// <param name="items"></param>
         /// <returns>Count</returns>
         decimal GetItemsCount(IList<ShoppingCartItem> items);
-
-        /// <summary>
-        /// Gets total price of shopping cartitems by using category id
-        /// </summary>
-        /// <param name="categoryId"></param>
-        /// <returns>Total Price</returns>
-        Task<decimal> GetTotalPriceByCategoryIdAsync(int categoryId);
 
         /// <summary>
         /// Inserts a campaign

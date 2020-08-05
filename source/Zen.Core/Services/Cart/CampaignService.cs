@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Zen.Core.Helper;
 using Zen.Core.Infrastructure;
 using Zen.Core.Services.Catalog;
 using Zen.Data.Entities;
@@ -34,7 +35,7 @@ namespace Zen.Core.Services.Cart
         public async Task<ShoppingCart> CalculateAsync(ShoppingCart cart)
         {
             if (cart is null)
-                cart = new ShoppingCart();
+                cart = Session.Get<ShoppingCart>(HttpContext.Session);
 
             var campaigns = await _dbContext.Campaign.ToListAsync();
 
@@ -42,7 +43,7 @@ namespace Zen.Core.Services.Cart
             {
                 if (await IsCampaignApplicableAsync(campaign))
                 {
-                    var totalPrice = await GetTotalPriceByCategoryIdAsync(campaign.CategoryId);
+                    var totalPrice = await _shoppingCartService.GetTotalPriceByCategoryIdAsync(campaign.CategoryId);
                     var discount = GetCampaignDiscount(campaign, totalPrice);
 
                     //Set discount values
@@ -50,6 +51,8 @@ namespace Zen.Core.Services.Cart
                     cart.CartTotalAfterDiscounts -= discount;
                 }
             }
+
+            Session.Set(HttpContext.Session, cart);
 
             return cart;
         }
@@ -109,25 +112,6 @@ namespace Zen.Core.Services.Cart
             return items.Sum(i => i.Quantity);
         }
 
-        public async Task<IList<ShoppingCartItem>> GetShoppingCartItemsByCategoryIdAsync(int categoryId)
-        {
-            var products = await _productService.GetProductsByCategoryIdAsync(categoryId);
-
-            if (products is null)
-                return null;
-
-            List<ShoppingCartItem> items = new List<ShoppingCartItem>();
-            foreach (var product in products)
-            {
-                var item = _shoppingCartService.GetShoppingCartItemByProductId(product.Id);
-
-                if (!(item is null))
-                    items.Add(item);
-            }
-
-            return items;
-        }
-
         public decimal GetTotalPrice(IList<ShoppingCartItem> items)
         {
             if (items is null)
@@ -135,24 +119,21 @@ namespace Zen.Core.Services.Cart
 
             return items.Sum(i => i.TotalPrice);
         }
-
-        public async Task<decimal> GetTotalPriceByCategoryIdAsync(int categoryId)
+        
+        public decimal GetTotalDiscounts(IList<ShoppingCartItem> items)
         {
-            var products = await _productService.GetProductsByCategoryIdAsync(categoryId);
-
-            if (products is null)
+            if (items is null)
                 return decimal.Zero;
 
-            decimal totalPrice = decimal.Zero;
-            foreach (var product in products)
-            {
-                var item = _shoppingCartService.GetShoppingCartItemByProductId(product.Id);
+            return items.Sum(i => i.TotalDiscount);
+        }
 
-                if (!(item is null))
-                    totalPrice += item.TotalPrice;
-            }
+        public decimal GetTotalPriceAfterDiscounts(IList<ShoppingCartItem> items)
+        {
+            if (items is null)
+                return decimal.Zero;
 
-            return totalPrice;
+            return GetTotalPrice(items) - GetTotalDiscounts(items);
         }
 
         public async Task<int> InsertCampaignAsync(Campaign campaign)
@@ -169,12 +150,20 @@ namespace Zen.Core.Services.Cart
                 return applicable;
 
             //Check items count enough and totalPrice is greater than discount to apply the campaign.
-            var items = await GetShoppingCartItemsByCategoryIdAsync(campaign.CategoryId);
+            var items = await _shoppingCartService.GetShoppingCartItemsByCategoryIdAsync(campaign.CategoryId);
 
             var totalPrice = GetTotalPrice(items);
+            var totalPriceAfterDiscounts = GetTotalPriceAfterDiscounts(items);
+            var itemsCount = GetItemsCount(items);
+            decimal campaignDiscount = GetCampaignDiscount(campaign, totalPrice);
 
-            return applicable = ((GetItemsCount(items) >= campaign.MinItemCount)
-                && (totalPrice > GetCampaignDiscount(campaign, totalPrice)));
+            applicable = ((itemsCount >= campaign.MinItemCount)
+                && (totalPriceAfterDiscounts > campaignDiscount));
+
+            if (applicable)
+                await _shoppingCartService.UpdateShoppingCartItemsDiscountAsync(items, campaignDiscount, itemsCount);
+
+            return applicable;
         }
 
         public async Task<int> UpdateCampaignAsync(Campaign campaign)

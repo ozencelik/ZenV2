@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Zen.Core.Helper;
 using Zen.Core.Infrastructure;
 using Zen.Core.Services.Catalog;
 using Zen.Data.Entities;
@@ -31,6 +32,29 @@ namespace Zen.Core.Services.Cart
         #endregion
 
         #region Methods
+        public Task<ShoppingCart> ApplyCouponAsync(Coupon coupon, ShoppingCart cart)
+        {
+            if (coupon is null)
+                return cart = Session.Get<ShoppingCart>(HttpContext.Session);
+
+            if (cart is null)
+                cart = Session.Get<ShoppingCart>(HttpContext.Session);
+
+            if (IsCouponApplicable(coupon))
+            {
+                var cartTotal = _shoppingCartService.GetCartTotal();
+                var discount = GetCouponDiscount(coupon, cartTotal);
+
+                //Set discount values
+                cart.CouponDiscount += discount;
+                cart.CartTotalAfterDiscounts -= discount;
+            }
+
+            Session.Set(HttpContext.Session, cart);
+
+            return cart;
+        }
+
         public async Task<ShoppingCart> CalculateAsync(ShoppingCart cart)
         {
             if (cart is null)
@@ -63,14 +87,6 @@ namespace Zen.Core.Services.Cart
         public async Task<IList<Coupon>> GetAllCouponsAsync()
         {
             return await _dbContext.Coupon.ToListAsync();
-        }
-
-        public decimal GetCartTotal(IList<ShoppingCartItem> items)
-        {
-            if (items is null)
-                return decimal.Zero;
-
-            return items.Sum(i => i.TotalPrice);
         }
 
         public async Task<Coupon> GetCouponByIdAsync(int couponId)
@@ -109,7 +125,7 @@ namespace Zen.Core.Services.Cart
             return await _dbContext.SaveChangesAsync();
         }
 
-        public bool IsCouponApplicable(Coupon coupon, IList<ShoppingCartItem> items)
+        public bool IsCouponApplicable(Coupon coupon)
         {
             bool applicable = false;
 
@@ -117,10 +133,11 @@ namespace Zen.Core.Services.Cart
                 return applicable;
 
             //Check cart total purchase enough to apply the coupon.
-            var cartTotal = GetCartTotal(items);
+            var cartTotal = _shoppingCartService.GetCartTotal();
+            var cartTotalAfterDiscounts = _shoppingCartService.GetCartTotalAfterDiscounts();
 
             return applicable = ((cartTotal >= coupon.MinPurchase)
-                && (cartTotal > GetCouponDiscount(coupon, cartTotal)));
+                && (cartTotalAfterDiscounts > GetCouponDiscount(coupon, cartTotal)));
         }
 
         public async Task<int> UpdateCouponAsync(Coupon coupon)

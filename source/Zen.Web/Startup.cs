@@ -27,6 +27,8 @@ namespace Zen.Web
 
             string connectionString = Configuration.GetConnectionString("Mysql-Dev");
             services.AddDbContext(connectionString);
+
+            services.AddSession();
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -55,6 +57,7 @@ namespace Zen.Web
             app.UseAuthorization();
 
             app.UseCookiePolicy();
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

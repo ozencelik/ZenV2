@@ -21,7 +21,5 @@ namespace Zen.Data.Models
         public double DeliveryCost { get; set; }
 
         public  IList<ShoppingCartItem> Items { get; set; }
-
-
     }
 }

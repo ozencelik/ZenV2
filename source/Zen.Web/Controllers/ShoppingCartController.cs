@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Zen.Core.Helper;
 using Zen.Core.Services.Cart;
 using Zen.Core.Services.Catalog;
 using Zen.Core.Services.Shipment;
@@ -62,9 +62,12 @@ namespace Zen.Web.Controllers
 
         public async Task<IActionResult> CartCount()
         {
-            var cart = await _shoppingCartService.GetShoppingCartAsync();
+            var cart = Session.Get<ShoppingCart>(HttpContext.Session);
 
             if (cart is null)
+                cart = await InitializeShoppingCartAsync(cart);
+
+            if (cart is null || cart.Items is null)
                 return Json(new
                 {
                     success = false,
@@ -74,7 +77,7 @@ namespace Zen.Web.Controllers
             return Json(new
             {
                 success = true,
-                count = cart.Count()
+                count = cart.Items.Count()
             });
         }
 
@@ -106,21 +109,31 @@ namespace Zen.Web.Controllers
                 item.Product = await _productService.GetProductByIdAsync(item.ProductId);
             }
 
-            ShoppingCart cart = new ShoppingCart
-            {
-                Items = items,
-                CampaignDiscount = 0,
-                CartTotal = items.Sum(i => i.TotalPrice),
-                CartTotalAfterDiscounts = items.Sum(i => i.TotalPrice),
-                CouponDiscount = 0,
-                DeliveryCost = 0
-            };
+            var cart = Session.Get<ShoppingCart>(HttpContext.Session);
 
             cart = await _campaignService.CalculateAsync(cart);
             cart.DeliveryCost = await _deliveryService.CalculateDeliveryCostAsync(cart.Items,
                 COST_PER_DELIVERY, COST_PER_PRODUCT, FIXED_COST);
 
             return View(cart);
+        }
+
+        public async Task<ShoppingCart> InitializeShoppingCartAsync(ShoppingCart cart)
+        {
+            var items = await _shoppingCartService.GetShoppingCartAsync();
+
+            if(items is null)
+                return cart;
+
+            cart.Items = items;
+            cart.CampaignDiscount = 0;
+            cart.CartTotal = items.Sum(i => i.TotalPrice);
+            cart.CartTotalAfterDiscounts = items.Sum(i => i.TotalPrice);
+            cart.CouponDiscount = 0;
+            cart.DeliveryCost = 0;
+            Session.Set(HttpContext.Session, cart);
+
+            return Session.Get<ShoppingCart>(HttpContext.Session);
         }
         #endregion
     }
