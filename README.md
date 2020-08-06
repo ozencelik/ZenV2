@@ -1,4 +1,4 @@
-# ZenCommerce.API, developed by using .NET Core 3.1.0 framework and basic Html,Css.
+# ZenV2, developed by using .NET Core 3.1.0 framework and basic Html,Css.
 
 ## Packages
 `ORM` : [EF Core](https://entityframeworkcore.com/)
@@ -15,8 +15,8 @@
 You can download the code as a zip or clone.
 
 Open up your favorite terminal and write,
-`git clone https://github.com/ozencelik/ZenCommerce`
+`git clone https://github.com/ozencelik/ZenV2`
 
-In addition, you can use the API from [ZenCommerce](https://zencommerce-ciceksepeti.herokuapp.com/),
+In addition, you can use the API from [ZenCommerce](https://zencommerce-trendyol.herokuapp.com/),
 
 ## Made with ❤ in İstanbul by Özenç Çelik
