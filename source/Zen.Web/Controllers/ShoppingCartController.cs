@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
 using Zen.Core.Helper;
@@ -18,6 +19,7 @@ namespace Zen.Web.Controllers
         private const double FIXED_COST = 2.99;
 
         private readonly ICampaignService _campaignService;
+        private readonly ICouponService _couponService;
         private readonly IDeliveryService _deliveryService;
         private readonly IProductService _productService;
         private readonly IShoppingCartService _shoppingCartService;
@@ -27,12 +29,14 @@ namespace Zen.Web.Controllers
         public ShoppingCartController(IShoppingCartService shoppingCartService,
             IProductService productService,
             ICampaignService campaignService,
-            IDeliveryService deliveryService)
+            IDeliveryService deliveryService,
+            ICouponService couponService)
         {
             _shoppingCartService = shoppingCartService;
             _productService = productService;
             _campaignService = campaignService;
             _deliveryService = deliveryService;
+            _couponService = couponService;
         }
         #endregion
 
@@ -62,10 +66,10 @@ namespace Zen.Web.Controllers
 
         public async Task<IActionResult> CartCount()
         {
-            var cart = Session.Get<ShoppingCart>(HttpContext.Session);
+            var cart = HttpContext.Session.GetData<ShoppingCart>();
 
             if (cart is null)
-                cart = await InitializeShoppingCartAsync(cart);
+                cart = await InitializeShoppingCartAsync();
 
             if (cart is null || cart.Items is null)
                 return Json(new
@@ -102,27 +106,29 @@ namespace Zen.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var items = await _shoppingCartService.GetShoppingCartAsync();
+            var cart = await InitializeShoppingCartAsync();
+            cart = await _campaignService.CalculateAsync(cart);
+            cart = await _couponService.CalculateAsync(cart);
+            cart.DeliveryCost = await _deliveryService.CalculateDeliveryCostAsync(cart.Items,
+                COST_PER_DELIVERY, COST_PER_PRODUCT, FIXED_COST);
 
+            //Save shopping cart.
+            HttpContext.Session.SetData(cart);
+
+            return View(cart);
+        }
+
+        public async Task<ShoppingCart> InitializeShoppingCartAsync()
+        {
+            var cart = new ShoppingCart();
+
+            var items = await _shoppingCartService.GetShoppingCartAsync();
             foreach (var item in items)
             {
                 item.Product = await _productService.GetProductByIdAsync(item.ProductId);
             }
 
-            var cart = Session.Get<ShoppingCart>(HttpContext.Session);
-
-            cart = await _campaignService.CalculateAsync(cart);
-            cart.DeliveryCost = await _deliveryService.CalculateDeliveryCostAsync(cart.Items,
-                COST_PER_DELIVERY, COST_PER_PRODUCT, FIXED_COST);
-
-            return View(cart);
-        }
-
-        public async Task<ShoppingCart> InitializeShoppingCartAsync(ShoppingCart cart)
-        {
-            var items = await _shoppingCartService.GetShoppingCartAsync();
-
-            if(items is null)
+            if (items is null)
                 return cart;
 
             cart.Items = items;
@@ -131,9 +137,8 @@ namespace Zen.Web.Controllers
             cart.CartTotalAfterDiscounts = items.Sum(i => i.TotalPrice);
             cart.CouponDiscount = 0;
             cart.DeliveryCost = 0;
-            Session.Set(HttpContext.Session, cart);
 
-            return Session.Get<ShoppingCart>(HttpContext.Session);
+            return cart;
         }
         #endregion
     }

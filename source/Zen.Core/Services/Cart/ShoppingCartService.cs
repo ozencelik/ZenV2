@@ -2,10 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
-using Zen.Core.Helper;
 using Zen.Core.Infrastructure;
 using Zen.Core.Services.Catalog;
 using Zen.Data.Entities;
@@ -18,17 +15,14 @@ namespace Zen.Core.Services.Cart
         #region Fields
         private readonly AppDbContext _dbContext;
         private readonly IProductService _productService;
-        private readonly IShoppingCartService _shoppingCartService;
         #endregion
 
         #region Ctor
         public ShoppingCartService(AppDbContext dbContext,
-            IProductService productService,
-            IShoppingCartService shoppingCartService)
+            IProductService productService)
         {
             _dbContext = dbContext;
             _productService = productService;
-            _shoppingCartService = shoppingCartService;
         }
         #endregion
 
@@ -76,10 +70,8 @@ namespace Zen.Core.Services.Cart
             return shoppingCart.Where(s => s.ProductId == product.Id).SingleOrDefault();
         }
 
-        public decimal GetCartTotal()
+        public decimal GetCartTotal(ShoppingCart cart)
         {
-            var cart = Session.Get<ShoppingCart>(HttpContext.Session);
-
             if (cart is null)
                 return decimal.Zero;
 
@@ -97,10 +89,8 @@ namespace Zen.Core.Services.Cart
             return items.Sum(i => i.TotalPrice);
         }
 
-        public decimal GetCartTotalAfterDiscounts()
+        public decimal GetCartTotalAfterDiscounts(ShoppingCart cart)
         {
-            var cart = Session.Get<ShoppingCart>(HttpContext.Session);
-
             if (cart is null)
                 return decimal.Zero;
 
@@ -127,7 +117,7 @@ namespace Zen.Core.Services.Cart
             List<ShoppingCartItem> items = new List<ShoppingCartItem>();
             foreach (var product in products)
             {
-                var item = _shoppingCartService.GetShoppingCartItemByProductId(product.Id);
+                var item = GetShoppingCartItemByProductId(product.Id);
 
                 if (!(item is null))
                     items.Add(item);
@@ -146,7 +136,7 @@ namespace Zen.Core.Services.Cart
             decimal totalPrice = decimal.Zero;
             foreach (var product in products)
             {
-                var item = _shoppingCartService.GetShoppingCartItemByProductId(product.Id);
+                var item = GetShoppingCartItemByProductId(product.Id);
 
                 if (!(item is null))
                     totalPrice += item.TotalPrice;

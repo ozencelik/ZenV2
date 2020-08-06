@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Zen.Core.Services.Cart;
-using Zen.Core.Services.Catalog;
 using Zen.Data.Entities;
 using Zen.Data.Models;
 
@@ -26,14 +25,6 @@ namespace Zen.Web.Controllers
         #endregion
 
         #region Methods
-        public IActionResult ApplyCoupon(int? id)
-        {
-            if(id is null)
-
-            var a = 5;
-            return View();
-        }
-
         public IActionResult Create()
         {
             return View();

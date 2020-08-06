@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Zen.Core.Helper;
 using Zen.Core.Infrastructure;
 using Zen.Core.Services.Catalog;
 using Zen.Data.Entities;
@@ -16,18 +15,15 @@ namespace Zen.Core.Services.Cart
     {
         #region Fields
         private readonly AppDbContext _dbContext;
-        private readonly IProductService _productService;
         private readonly IShoppingCartService _shoppingCartService;
         #endregion
 
         #region Ctor
         public CampaignService(AppDbContext dbContext,
-            IShoppingCartService shoppingCartService,
-            IProductService productService)
+            IShoppingCartService shoppingCartService)
         {
             _dbContext = dbContext;
             _shoppingCartService = shoppingCartService;
-            _productService = productService;
         }
         #endregion
 
@@ -35,7 +31,7 @@ namespace Zen.Core.Services.Cart
         public async Task<ShoppingCart> CalculateAsync(ShoppingCart cart)
         {
             if (cart is null)
-                cart = Session.Get<ShoppingCart>(HttpContext.Session);
+                return default;
 
             var campaigns = await _dbContext.Campaign.ToListAsync();
 
@@ -51,8 +47,6 @@ namespace Zen.Core.Services.Cart
                     cart.CartTotalAfterDiscounts -= discount;
                 }
             }
-
-            Session.Set(HttpContext.Session, cart);
 
             return cart;
         }
@@ -119,7 +113,7 @@ namespace Zen.Core.Services.Cart
 
             return items.Sum(i => i.TotalPrice);
         }
-        
+
         public decimal GetTotalDiscounts(IList<ShoppingCartItem> items)
         {
             if (items is null)

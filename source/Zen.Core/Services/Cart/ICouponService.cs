@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Zen.Data.Entities;
 using Zen.Data.Models;
@@ -18,7 +17,7 @@ namespace Zen.Core.Services.Cart
         /// <param name="coupon">Coupon</param>
         /// <param name="cart">Shopping Cart</param>
         /// <returns>ShoppingCart result</returns>
-        Task<ShoppingCart> ApplyCouponAsync(Coupon coupon, ShoppingCart cart);
+        ShoppingCart ApplyCoupon(Coupon coupon, ShoppingCart cart);
 
         /// <summary>
         /// Calculate coupon discounts
@@ -65,7 +64,7 @@ namespace Zen.Core.Services.Cart
         /// </summary>
         /// <param name="coupon">Coupon</param>
         /// <returns>Is Applicable</returns>  
-        bool IsCouponApplicable(Coupon coupon);
+        bool IsCouponApplicable(Coupon coupon, ShoppingCart cart);
 
         /// <summary>
         /// Updates a coupon

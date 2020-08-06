@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Zen.Core.Helper;
 using Zen.Core.Infrastructure;
 using Zen.Core.Services.Catalog;
 using Zen.Data.Entities;
@@ -16,41 +15,36 @@ namespace Zen.Core.Services.Cart
     {
         #region Fields
         private readonly AppDbContext _dbContext;
-        private readonly IProductService _productService;
         private readonly IShoppingCartService _shoppingCartService;
         #endregion
 
         #region Ctor
         public CouponService(AppDbContext dbContext,
-            IShoppingCartService shoppingCartService,
-            IProductService productService)
+            IShoppingCartService shoppingCartService)
         {
             _dbContext = dbContext;
             _shoppingCartService = shoppingCartService;
-            _productService = productService;
         }
         #endregion
 
         #region Methods
-        public Task<ShoppingCart> ApplyCouponAsync(Coupon coupon, ShoppingCart cart)
+        public ShoppingCart ApplyCoupon(Coupon coupon, ShoppingCart cart)
         {
             if (coupon is null)
-                return cart = Session.Get<ShoppingCart>(HttpContext.Session);
+                return default;
 
             if (cart is null)
-                cart = Session.Get<ShoppingCart>(HttpContext.Session);
+                return default;
 
-            if (IsCouponApplicable(coupon))
+            if (IsCouponApplicable(coupon, cart))
             {
-                var cartTotal = _shoppingCartService.GetCartTotal();
+                var cartTotal = _shoppingCartService.GetCartTotal(cart);
                 var discount = GetCouponDiscount(coupon, cartTotal);
 
                 //Set discount values
                 cart.CouponDiscount += discount;
                 cart.CartTotalAfterDiscounts -= discount;
             }
-
-            Session.Set(HttpContext.Session, cart);
 
             return cart;
         }
@@ -64,9 +58,9 @@ namespace Zen.Core.Services.Cart
 
             foreach (var coupon in coupons)
             {
-                if (IsCouponApplicable(coupon, cart.Items))
+                if (IsCouponApplicable(coupon, cart))
                 {
-                    var cartTotal = GetCartTotal(cart.Items);
+                    var cartTotal = _shoppingCartService.GetCartTotal(cart.Items);
                     var discount = GetCouponDiscount(coupon, cartTotal);
 
                     //Set discount values
@@ -125,16 +119,19 @@ namespace Zen.Core.Services.Cart
             return await _dbContext.SaveChangesAsync();
         }
 
-        public bool IsCouponApplicable(Coupon coupon)
+        public bool IsCouponApplicable(Coupon coupon, ShoppingCart cart)
         {
             bool applicable = false;
 
             if (coupon is null)
                 return applicable;
 
+            if (cart is null)
+                return applicable;
+
             //Check cart total purchase enough to apply the coupon.
-            var cartTotal = _shoppingCartService.GetCartTotal();
-            var cartTotalAfterDiscounts = _shoppingCartService.GetCartTotalAfterDiscounts();
+            var cartTotal = _shoppingCartService.GetCartTotal(cart);
+            var cartTotalAfterDiscounts = _shoppingCartService.GetCartTotalAfterDiscounts(cart);
 
             return applicable = ((cartTotal >= coupon.MinPurchase)
                 && (cartTotalAfterDiscounts > GetCouponDiscount(coupon, cartTotal)));

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
 using Zen.Core.Infrastructure;
 
 namespace Zen.Web
@@ -28,7 +29,9 @@ namespace Zen.Web
             string connectionString = Configuration.GetConnectionString("Mysql-Dev");
             services.AddDbContext(connectionString);
 
-            services.AddSession();
+            services.AddSession(options => {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
         }
 
         public void ConfigureContainer(ContainerBuilder builder)

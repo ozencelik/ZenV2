@@ -57,7 +57,7 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CampaignDiscount) : 
+            @Html.DisplayNameFor(model => model.CampaignDiscount) :
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CampaignDiscount) ₺
@@ -69,22 +69,19 @@
             @Html.DisplayFor(model => model.CouponDiscount) ₺
         </dd>
         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.CartTotal) :
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CartTotalAfterDiscounts) ₺
+            <span>
+                (@Model.CartTotal - @Model.CartTotalAfterDiscounts) ₺
+            </span>
+        </dd>
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DeliveryCost) :
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.DeliveryCost) ₺
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CartTotalAfterDiscounts) :
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CartTotalAfterDiscounts) ₺
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.CartTotal) :
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.CartTotal) ₺
         </dd>
     </dl>
 </div>

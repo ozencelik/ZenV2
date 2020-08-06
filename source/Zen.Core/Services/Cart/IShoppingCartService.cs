@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using Zen.Data.Entities;
 using Zen.Data.Models;
@@ -32,7 +31,7 @@ namespace Zen.Core.Services.Cart
         /// Gets cart total price of shopping cart
         /// </summary>
         /// <returns>Cart total</returns>
-        decimal GetCartTotal();
+        decimal GetCartTotal(ShoppingCart cart);
 
         /// <summary>
         /// Gets cart total price of shopping cartitems
@@ -45,7 +44,7 @@ namespace Zen.Core.Services.Cart
         /// Gets cart total of shopping cart after discounts 
         /// </summary>
         /// <returns>Cart total after dsicounts</returns>
-        decimal GetCartTotalAfterDiscounts();
+        decimal GetCartTotalAfterDiscounts(ShoppingCart cart);
 
         /// <summary>
         /// Gets shopping cart
