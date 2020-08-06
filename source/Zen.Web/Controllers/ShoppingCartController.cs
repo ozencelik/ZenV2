@@ -106,6 +106,16 @@ namespace Zen.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var sessionCart = HttpContext.Session.GetData<ShoppingCart>();
+
+            if (!(sessionCart is null))
+            {
+                var cartItems = await _shoppingCartService.GetShoppingCartAsync();
+
+                if (sessionCart.Items.Count() == cartItems.Count())
+                    return View(sessionCart);
+            }
+
             var cart = await InitializeShoppingCartAsync();
             cart = await _campaignService.CalculateAsync(cart);
             cart = await _couponService.CalculateAsync(cart);

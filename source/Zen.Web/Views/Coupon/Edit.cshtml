@@ -1,4 +1,4 @@
-﻿@model Zen.Data.Entities.Campaign;
+﻿@model Zen.Data.Entities.Coupon;
 
 @{
     ViewData["Title"] = "Coupon - Edit";
@@ -20,11 +20,6 @@
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <input asp-for="CategoryId" class="form-control" />
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="DiscountAmount" class="control-label"></label>
                 <input asp-for="DiscountAmount" class="form-control" />
                 <span asp-validation-for="DiscountAmount" class="text-danger"></span>
@@ -35,9 +30,9 @@
                 <span asp-validation-for="DiscountType" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="MinItemCount" class="control-label"></label>
-                <input asp-for="MinItemCount" class="form-control" />
-                <span asp-validation-for="MinItemCount" class="text-danger"></span>
+                <label asp-for="MinPurchase" class="control-label"></label>
+                <input asp-for="MinPurchase" class="form-control" />
+                <span asp-validation-for="MinPurchase" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="CreatedOn" class="control-label"></label>
