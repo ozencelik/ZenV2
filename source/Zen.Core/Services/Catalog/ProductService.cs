@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Zen.Core.Infrastructure;
+using Zen.Data;
 using Zen.Data.Entities;
 
 namespace Zen.Core.Services.Catalog
@@ -12,50 +13,47 @@ namespace Zen.Core.Services.Catalog
     public class ProductService : IProductService
     {
         #region Fields
-        private readonly AppDbContext _dbContext;
+        private readonly IRepository<Product> _productRepository;
         #endregion
 
         #region Ctor
-        public ProductService(AppDbContext dbContext)
+        public ProductService(IRepository<Product> productRepository)
         {
-            _dbContext = dbContext;
+            _productRepository = productRepository;
         }
         #endregion
 
         #region Methods
         public async Task<int> DeleteProductAsync(Product product)
         {
-            _dbContext.Product.Remove(product);
-            return await _dbContext.SaveChangesAsync();
+            return await _productRepository.DeleteAsync(product);
         }
 
         public async Task<IList<Product>> GetAllProductsAsync()
         {
-            return await _dbContext.Product.ToListAsync();
+            return await _productRepository.GetAllAsync();
         }
 
         public async Task<Product> GetProductByIdAsync(int productId)
         {
-            return await _dbContext.Product
-                .FirstOrDefaultAsync(m => m.Id == productId);
+            return await _productRepository.Table
+                .FirstOrDefaultAsync(p => p.Id == productId);
         }
 
         public async Task<IList<Product>> GetProductsByCategoryIdAsync(int categoryId)
         {
-            return await _dbContext.Product
+            return await _productRepository.Table
                 .Where(m => m.CategoryId == categoryId)?.ToListAsync();
         }
 
         public async Task<int> InsertProductAsync(Product product)
         {
-            _dbContext.Add(product);
-            return await _dbContext.SaveChangesAsync();
+            return await _productRepository.InsertAsync(product);
         }
 
         public async Task<int> UpdateProductAsync(Product product)
         {
-            _dbContext.Update(product);
-            return await _dbContext.SaveChangesAsync();
+            return await _productRepository.UpdateAsync(product);
         }
         #endregion
     }

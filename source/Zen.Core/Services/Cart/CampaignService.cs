@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Zen.Core.Infrastructure;
-using Zen.Core.Services.Catalog;
+using Zen.Data;
 using Zen.Data.Entities;
 using Zen.Data.Enums;
 using Zen.Data.Models;
@@ -14,15 +13,15 @@ namespace Zen.Core.Services.Cart
     public class CampaignService : ICampaignService
     {
         #region Fields
-        private readonly AppDbContext _dbContext;
+        private readonly IRepository<Campaign> _campaignRepository;
         private readonly IShoppingCartService _shoppingCartService;
         #endregion
 
         #region Ctor
-        public CampaignService(AppDbContext dbContext,
+        public CampaignService(IRepository<Campaign> campaignRepository,
             IShoppingCartService shoppingCartService)
         {
-            _dbContext = dbContext;
+            _campaignRepository = campaignRepository;
             _shoppingCartService = shoppingCartService;
         }
         #endregion
@@ -33,7 +32,7 @@ namespace Zen.Core.Services.Cart
             if (cart is null)
                 return default;
 
-            var campaigns = await _dbContext.Campaign.ToListAsync();
+            var campaigns = await GetAllCampaignsAsync();
 
             foreach (var campaign in campaigns)
             {
@@ -53,19 +52,17 @@ namespace Zen.Core.Services.Cart
 
         public async Task<int> DeleteCampaignAsync(Campaign campaign)
         {
-            _dbContext.Campaign.Remove(campaign);
-            return await _dbContext.SaveChangesAsync();
+            return await _campaignRepository.DeleteAsync(campaign);
         }
 
         public async Task<IList<Campaign>> GetAllCampaignsAsync()
         {
-            return await _dbContext.Campaign.ToListAsync();
+            return await _campaignRepository.GetAllAsync();
         }
 
         public async Task<Campaign> GetCampaignByIdAsync(int campaignId)
         {
-            return await _dbContext.Campaign
-               .FirstOrDefaultAsync(m => m.Id == campaignId);
+            return await _campaignRepository.GetByIdAsync(campaignId);
         }
 
         public decimal GetCampaignDiscount(Campaign campaign, decimal totalPrice)
@@ -94,8 +91,8 @@ namespace Zen.Core.Services.Cart
 
         public async Task<IList<Campaign>> GetCampaignsByCategoryIdAsync(int categoryId)
         {
-            return await _dbContext.Campaign
-                .Where(m => m.CategoryId == categoryId)?.ToListAsync();
+            return await _campaignRepository.Table
+                .Where(c => c.CategoryId == categoryId)?.ToListAsync();
         }
 
         public decimal GetItemsCount(IList<ShoppingCartItem> items)
@@ -132,8 +129,7 @@ namespace Zen.Core.Services.Cart
 
         public async Task<int> InsertCampaignAsync(Campaign campaign)
         {
-            _dbContext.Add(campaign);
-            return await _dbContext.SaveChangesAsync();
+            return await _campaignRepository.InsertAsync(campaign);
         }
 
         public async Task<bool> IsCampaignApplicableAsync(Campaign campaign)
@@ -162,8 +158,7 @@ namespace Zen.Core.Services.Cart
 
         public async Task<int> UpdateCampaignAsync(Campaign campaign)
         {
-            _dbContext.Update(campaign);
-            return await _dbContext.SaveChangesAsync();
+            return await _campaignRepository.UpdateAsync(campaign);
         }
         #endregion
     }

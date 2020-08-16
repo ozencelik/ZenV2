@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Zen.Core.Infrastructure;
 using Zen.Core.Services.Catalog;
+using Zen.Data;
 using Zen.Data.Entities;
 using Zen.Data.Models;
 
@@ -13,15 +14,15 @@ namespace Zen.Core.Services.Cart
     public class ShoppingCartService : IShoppingCartService
     {
         #region Fields
-        private readonly AppDbContext _dbContext;
+        private readonly IRepository<ShoppingCartItem> _shoppingCartRepository;
         private readonly IProductService _productService;
         #endregion
 
         #region Ctor
-        public ShoppingCartService(AppDbContext dbContext,
+        public ShoppingCartService(IRepository<ShoppingCartItem> shoppingCartRepository,
             IProductService productService)
         {
-            _dbContext = dbContext;
+            _shoppingCartRepository = shoppingCartRepository;
             _productService = productService;
         }
         #endregion
@@ -45,8 +46,7 @@ namespace Zen.Core.Services.Cart
                     TotalPrice = product.Price * quantity
                 };
 
-                _dbContext.Add(newItem);
-                await _dbContext.SaveChangesAsync();
+                await _shoppingCartRepository.InsertAsync(newItem);
             }
             else
             {
@@ -59,7 +59,8 @@ namespace Zen.Core.Services.Cart
             return null;
         }
 
-        public ShoppingCartItem FindShoppingCartItemInTheCart(IList<ShoppingCartItem> shoppingCart, Product product)
+        public ShoppingCartItem FindShoppingCartItemInTheCart(IList<ShoppingCartItem> shoppingCart,
+            Product product)
         {
             if (shoppingCart == null)
                 throw new ArgumentNullException(nameof(shoppingCart));
@@ -99,12 +100,13 @@ namespace Zen.Core.Services.Cart
 
         public async Task<IList<ShoppingCartItem>> GetShoppingCartAsync()
         {
-            return await _dbContext.ShoppingCart.ToListAsync();
+            return await _shoppingCartRepository.GetAllAsync();
         }
 
         public ShoppingCartItem GetShoppingCartItemByProductId(int productId)
         {
-            return _dbContext.ShoppingCart.Where(s => s.ProductId == productId).SingleOrDefault();
+            return _shoppingCartRepository.Table
+                .Where(s => s.ProductId == productId).SingleOrDefault();
         }
 
         public async Task<IList<ShoppingCartItem>> GetShoppingCartItemsByCategoryIdAsync(int categoryId)
@@ -150,8 +152,7 @@ namespace Zen.Core.Services.Cart
             if (item is null)
                 return 0;
 
-            _dbContext.Update(item);
-            return await _dbContext.SaveChangesAsync();
+            return await _shoppingCartRepository.UpdateAsync(item);
         }
 
         public async Task<bool> UpdateShoppingCartItemsDiscountAsync(IList<ShoppingCartItem> items,

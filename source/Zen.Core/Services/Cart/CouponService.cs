@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Zen.Core.Infrastructure;
 using Zen.Core.Services.Catalog;
+using Zen.Data;
 using Zen.Data.Entities;
 using Zen.Data.Enums;
 using Zen.Data.Models;
@@ -14,15 +15,15 @@ namespace Zen.Core.Services.Cart
     public class CouponService : ICouponService
     {
         #region Fields
-        private readonly AppDbContext _dbContext;
+        private readonly IRepository<Coupon> _couponRepository;
         private readonly IShoppingCartService _shoppingCartService;
         #endregion
 
         #region Ctor
-        public CouponService(AppDbContext dbContext,
+        public CouponService(IRepository<Coupon> couponRepository,
             IShoppingCartService shoppingCartService)
         {
-            _dbContext = dbContext;
+            _couponRepository = couponRepository;
             _shoppingCartService = shoppingCartService;
         }
         #endregion
@@ -54,7 +55,7 @@ namespace Zen.Core.Services.Cart
             if (cart is null)
                 cart = new ShoppingCart();
 
-            var coupons = await _dbContext.Coupon.ToListAsync();
+            var coupons = await GetAllCouponsAsync();
 
             foreach (var coupon in coupons)
             {
@@ -74,19 +75,18 @@ namespace Zen.Core.Services.Cart
 
         public async Task<int> DeleteCouponAsync(Coupon coupon)
         {
-            _dbContext.Coupon.Remove(coupon);
-            return await _dbContext.SaveChangesAsync();
+            return await _couponRepository.DeleteAsync(coupon);
         }
 
         public async Task<IList<Coupon>> GetAllCouponsAsync()
         {
-            return await _dbContext.Coupon.ToListAsync();
+            return await _couponRepository.GetAllAsync();
         }
 
         public async Task<Coupon> GetCouponByIdAsync(int couponId)
         {
-            return await _dbContext.Coupon
-              .FirstOrDefaultAsync(m => m.Id == couponId);
+            return await _couponRepository.Table
+              .FirstOrDefaultAsync(c => c.Id == couponId);
         }
 
         public decimal GetCouponDiscount(Coupon coupon, decimal cartTotal)
@@ -115,8 +115,7 @@ namespace Zen.Core.Services.Cart
 
         public async Task<int> InsertCouponAsync(Coupon coupon)
         {
-            _dbContext.Add(coupon);
-            return await _dbContext.SaveChangesAsync();
+            return await _couponRepository.InsertAsync(coupon);
         }
 
         public bool IsCouponApplicable(Coupon coupon, ShoppingCart cart)
@@ -139,8 +138,7 @@ namespace Zen.Core.Services.Cart
 
         public async Task<int> UpdateCouponAsync(Coupon coupon)
         {
-            _dbContext.Update(coupon);
-            return await _dbContext.SaveChangesAsync();
+            return await _couponRepository.UpdateAsync(coupon);
         }
         #endregion
     }

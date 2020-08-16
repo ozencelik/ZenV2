@@ -3,6 +3,8 @@ using Module = Autofac.Module;
 using Zen.Core.Services.Catalog;
 using Zen.Core.Services.Cart;
 using Zen.Core.Services.Shipment;
+using Zen.Data;
+using Zen.Data.Entities;
 
 namespace Zen.Core.Infrastructure
 {
@@ -22,6 +24,9 @@ namespace Zen.Core.Infrastructure
         #region Methods
         private void RegisterCommonDependencies(ContainerBuilder builder)
         {
+            builder.RegisterGeneric(typeof(EfCoreRepository<>)).As(typeof(IRepository<>))
+                .InstancePerLifetimeScope();
+
             builder.RegisterType<CategoryService>().As<ICategoryService>()
                 .InstancePerLifetimeScope();
 
